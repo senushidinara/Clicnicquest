@@ -187,6 +187,27 @@
     color: #1e40af;
 }
 
+/* Animated Leaderboard */
+.animated-leaderboard-container{display:flex;flex-direction:column;gap:12px}
+.leaderboard-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
+.leaderboard-header .header-title{display:flex;align-items:center;gap:10px;font-weight:800;color:#1f2937}
+.leaderboard-controls .control-button{padding:8px 12px;border-radius:8px;border:1px solid #e5e7eb;background:rgba(255,255,255,.7);font-weight:700;color:#475569}
+.leaderboard-list{display:flex;flex-direction:column;gap:10px}
+.leaderboard-entry{display:grid;grid-template-columns:80px 1fr auto;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;border:1px solid #e5e7eb;position:relative}
+.leaderboard-entry.top-three{box-shadow:0 8px 26px rgba(250,204,21,.12)}
+.rank-display{font-size:1.1rem;font-weight:800}
+.rank-change{display:inline-flex;align-items:center;gap:4px;font-weight:800}
+.entry-user{display:flex;align-items:center;gap:12px}
+.user-info .user-name{font-weight:800;color:#1f2937}
+.user-info .user-role{margin-top:2px}
+.role-badge{padding:4px 8px;border-radius:9999px;color:#fff;font-weight:700}
+.entry-stats{display:flex;align-items:center;gap:16px}
+.stat-item{display:flex;align-items:center;gap:6px}
+.you-badge{margin-left:6px;background:#10b981;color:#fff;border-radius:9999px;padding:2px 6px;font-size:.7rem;font-weight:800}
+.new-entry-glow{position:absolute;inset:-2px;border-radius:14px;background:radial-gradient(400px 40px at 10% -10%, rgba(139,92,246,.18), transparent 50%),radial-gradient(400px 40px at 90% 110%, rgba(59,130,246,.18), transparent 50%)}
+.celebration-particles{position:absolute;right:14px;top:6px;display:flex;gap:4px}
+.particle{filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
+
 /* Streak Counter */
 .streak-counter {
     display: inline-flex;
