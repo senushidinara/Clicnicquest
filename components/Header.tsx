@@ -6,8 +6,8 @@ import React from 'react';
 import { HomeIcon, TrophyIcon, UserIcon } from './icons';
 
 interface HeaderProps {
-    currentView: 'dashboard' | 'leaderboard' | 'quiz' | 'profile';
-    onNavigate: (view: 'dashboard' | 'leaderboard' | 'profile') => void;
+    currentView: 'dashboard' | 'leaderboard' | 'quiz' | 'profile' | 'hospital-map' | 'role-selector';
+    onNavigate: (view: 'dashboard' | 'leaderboard' | 'profile' | 'hospital-map' | 'role-selector') => void;
     score: number;
     levelName: string;
     userAvatar: string;
@@ -46,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, score, levelNa
             <nav className="flex items-center gap-2 pl-4 border-l border-gray-200">
                 <button 
                     onClick={() => onNavigate('dashboard')} 
-                    className={`btn btn-nav ${['dashboard', 'quiz'].includes(currentView) ? 'active' : ''}`}
+                    className={`btn btn-nav ${['dashboard', 'quiz', 'hospital-map', 'role-selector'].includes(currentView) ? 'active' : ''}`}
                     aria-label="Go to Dashboard"
                 >
                     <HomeIcon className="w-5 h-5 md:mr-2" />
