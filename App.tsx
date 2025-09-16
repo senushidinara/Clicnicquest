@@ -451,7 +451,7 @@ const App: React.FC = () => {
         const MissionIcon = details.icon;
 
         return (
-            <div className="card w-full max-w-2xl animate-fade-in p-0 overflow-hidden">
+            <div className="card glass-card gradient-border w-full max-w-2xl animate-fade-in p-0 overflow-hidden">
                 <div className={`mission-header mission-header-${details.color}`}>
                     <MissionIcon className="w-8 h-8" />
                     <h2 className="text-2xl font-bold">{mission.title}</h2>
@@ -460,6 +460,12 @@ const App: React.FC = () => {
                     <div className="text-center mb-6">
                         <p className="text-md text-gray-600 mb-4">{mission.description}</p>
                         <p className="text-sm font-semibold text-blue-500">Question {currentQuestionIndex + 1} of {mission.questions.length}</p>
+                        <div
+                            className="quiz-progress"
+                            style={{ ['--qp' as any]: `${((currentQuestionIndex + 1) / mission.questions.length) * 100}%` }}
+                        >
+                            <div className="quiz-progress-fill" />
+                        </div>
                         <h3 className="text-2xl font-bold mt-2">{question.question}</h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -491,7 +497,7 @@ const App: React.FC = () => {
                                 <button
                                     key={option}
                                     onClick={() => handleSelectAnswer(option)}
-                                    className={`p-4 border-2 rounded-lg text-left font-semibold transition-all duration-200 flex items-center gap-3 ${dynamicClasses}`}
+                                    className={`quiz-option p-4 border-2 rounded-lg text-left font-semibold transition-all duration-200 flex items-center gap-3 ${dynamicClasses}`}
                                     disabled={!!answerStatus}
                                 >
                                     <span className="flex-shrink-0 font-bold text-blue-500">{String.fromCharCode(65 + index)}</span>
