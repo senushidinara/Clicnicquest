@@ -85,7 +85,7 @@ const HospitalMap: React.FC<HospitalMapProps> = ({
             return (
               <motion.div
                 key={department.id}
-                className={`department ${selectedDepartment?.id === department.id ? 'selected' : ''}`}
+                className={`department glass-card ${selectedDepartment?.id === department.id ? 'selected' : ''}`}
                 style={{
                   left: `${department.location.x}%`,
                   top: `${department.location.y}%`,
