@@ -71,7 +71,7 @@ const RoleSelector: React.FC<RoleSelectorProps> = ({
           return (
             <motion.div
               key={role.id}
-              className={`role-card ${isSelected ? 'selected' : ''} ${isLocked ? 'locked' : ''}`}
+              className={`role-card glass-card shine-on-hover ${isSelected ? 'selected' : ''} ${isLocked ? 'locked' : ''}`}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}

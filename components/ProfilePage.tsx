@@ -24,6 +24,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   const [tempUsername, setTempUsername] = useState(user.username);
   const [tempAvatarConfig, setTempAvatarConfig] = useState<AvatarConfig>(user.avatarConfig);
   const [selectedTab, setSelectedTab] = useState<'overview' | 'badges' | 'stats'>('overview');
+  const handleTabsKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const order: Array<'overview' | 'badges' | 'stats'> = ['overview', 'badges', 'stats'];
+    const idx = order.indexOf(selectedTab);
+    if (e.key === 'ArrowRight') {
+      setSelectedTab(order[(idx + 1) % order.length]);
+    } else if (e.key === 'ArrowLeft') {
+      setSelectedTab(order[(idx - 1 + order.length) % order.length]);
+    }
+  };
 
   const skinTones = ['👤', '👨🏻', '👨🏼', '👨🏽', '👨🏾', '👨🏿', '👩🏻', '👩🏼', '👩🏽', '👩🏾', '👩🏿'];
   const hairStyles = ['🦲', '👨‍🦲', '👨‍🦱', '👨‍🦳', '👨‍🦰', '👩‍🦲', '👩‍🦱', '👩‍🦳', '👩‍🦰'];
@@ -82,7 +91,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   return (
     <div className="profile-page-container">
       <motion.div
-        className="profile-header"
+        className="profile-header glass-panel"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -132,8 +141,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               )}
             </div>
             
-            <div className="current-role">
-              <span className="role-badge" style={{ backgroundColor: user.currentRole.color }}>
+            <div className="current-role" style={{ ['--role-color' as any]: user.currentRole.color }}>
+              <span className="role-badge">
                 {user.currentRole.icon} {user.currentRole.name}
               </span>
             </div>
@@ -148,11 +157,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
       </motion.div>
 
       {/* Tab Navigation */}
-      <div className="profile-tabs">
+      <div className="profile-tabs glass-panel" role="tablist" tabIndex={0} onKeyDown={handleTabsKeyDown}>
+        <div className={`tab-indicator ${selectedTab === 'overview' ? 'pos-0' : selectedTab === 'badges' ? 'pos-1' : 'pos-2'}`} />
         {(['overview', 'badges', 'stats'] as const).map((tab) => (
           <button
             key={tab}
             className={`tab-button ${selectedTab === tab ? 'active' : ''}`}
+            role="tab"
+            aria-selected={selectedTab === tab}
             onClick={() => setSelectedTab(tab)}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -178,8 +190,13 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                   {user.roles.map((role) => (
                     <motion.div
                       key={role.id}
-                      className={`role-card ${user.currentRole.id === role.id ? 'current' : ''}`}
+                      className={`role-card glass-card shine-on-hover ${user.currentRole.id === role.id ? 'current' : ''}`}
                       whileHover={{ scale: 1.05 }}
+                      onMouseMove={(e) => {
+                        const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
+                        const x = ((e.clientX - rect.left) / rect.width) * 100;
+                        (e.currentTarget as HTMLDivElement).style.setProperty('--mx', x + '%');
+                      }}
                     >
                       <div className="role-icon">{role.icon}</div>
                       <div className="role-name">{role.name}</div>
@@ -192,7 +209,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                 </div>
               </div>
 
-              <div className="recent-activity">
+              <div className="recent-activity glass-card">
                 <h3>Recent Activity</h3>
                 <div className="activity-list">
                   <div className="activity-item">
@@ -219,7 +236,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
             <div className="badges-content">
               {Object.entries(getBadgesByRarity()).map(([rarity, badges]) => (
                 <div key={rarity} className="badge-rarity-section">
-                  <h3 style={{ color: getRarityColor(rarity as Badge['rarity']) }}>
+                  <h3 className={`rarity-title rarity-${rarity}`}>
                     {rarity.charAt(0).toUpperCase() + rarity.slice(1)} Badges ({badges.length})
                   </h3>
                   <div className="badges-grid">
@@ -232,9 +249,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                         transition={{ duration: 0.3, delay: index * 0.05 }}
                         whileHover={{ scale: 1.1, y: -5 }}
                       >
-                        <div 
-                          className="badge-icon"
-                          style={{ color: getRarityColor(badge.rarity) }}
+                        <div
+                          className={`badge-icon rarity-${badge.rarity}`}
                         >
                           {badge.icon}
                         </div>

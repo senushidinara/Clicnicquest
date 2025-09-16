@@ -84,7 +84,7 @@ const AnimatedLeaderboard: React.FC<AnimatedLeaderboardProps> = ({
   return (
     <div className="animated-leaderboard-container">
       <motion.div
-        className="leaderboard-header"
+        className="leaderboard-header glass-panel"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -117,7 +117,7 @@ const AnimatedLeaderboard: React.FC<AnimatedLeaderboardProps> = ({
             return (
               <motion.div
                 key={entry.user.id}
-                className={`leaderboard-entry ${isCurrentUser ? 'current-user' : ''} ${isTopThree ? 'top-three' : ''}`}
+                className={`leaderboard-entry glass-row shine-on-hover ${isCurrentUser ? 'current-user' : ''} ${isTopThree ? 'top-three' : ''}`}
                 layout
                 initial={{ opacity: 0, x: -50, scale: 0.9 }}
                 animate={{ 

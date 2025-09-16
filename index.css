@@ -1,11 +1,34 @@
-body {
+@import "styles/profile.css";
+@import "styles/animations.css";
+
+* {
     font-family: 'Inter', sans-serif;
     color: #1e293b; /* Darker slate color for better contrast */
 }
 
 .app-bg {
+    position: relative;
     background: linear-gradient(180deg, #f3f5f9 0%, #e8f1f8 100%);
 }
+.app-bg::before,.app-bg::after{
+    content:"";position:absolute;inset:auto;filter:blur(60px);border-radius:50%;z-index:0;opacity:.6;pointer-events:none
+}
+.app-bg::before{width:480px;height:480px;background:radial-gradient(circle at 30% 30%, rgba(59,130,246,.35), transparent 60%);top:-120px;left:-120px}
+.app-bg::after{width:420px;height:420px;background:radial-gradient(circle at 70% 70%, rgba(139,92,246,.28), transparent 60%);bottom:-100px;right:-100px}
+
+/* Glassmorphism utilities */
+.glass-panel{background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.65);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px;box-shadow:0 10px 30px rgba(2,8,23,.08), inset 0 -1px 0 rgba(255,255,255,.3)}
+.glass-card{background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.6);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:16px;box-shadow:0 8px 24px rgba(2,8,23,.08)}
+.glass-row{background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.glass-header{background:rgba(255,255,255,.6) !important;backdrop-filter:blur(14px) !important;-webkit-backdrop-filter:blur(14px) !important;border-bottom:1px solid rgba(148,163,184,.35)}
+
+/* Shimmer on hover */
+.shine-on-hover{position:relative;overflow:hidden}
+.shine-on-hover::after{content:"";position:absolute;inset:auto -100% 0;top:0;width:40%;transform:skewX(-20deg);background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.35), rgba(255,255,255,0));transition:transform .6s}
+.shine-on-hover:hover::after{transform:translateX(300%) skewX(-20deg)}
+
+/* Brand title glow without changing color */
+.brand-glow{ text-shadow: 0 1px 0 rgba(255,255,255,.6), 0 4px 12px rgba(59,130,246,.25); }
 
 /* Dashboard Styles */
 .dashboard-container {
@@ -29,11 +52,13 @@ body {
 }
 
 .dashboard-card {
-    background: white;
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-radius: 16px;
     padding: 2rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.65);
 }
 
 .main-card {
@@ -76,17 +101,42 @@ body {
     transition: all 0.2s ease;
 }
 
+/* TaskBoard */
+.task-board-container{display:flex;flex-direction:column;gap:12px;position:relative;z-index:1}
+.task-board-header{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.task-filters{display:flex;gap:8px}
+.filter-button{background:rgba(255,255,255,.7);border:1px solid #e5e7eb;color:#475569;font-weight:700;padding:8px 10px;border-radius:10px;display:inline-flex;align-items:center;gap:6px}
+.filter-button.active{background:#ffffff;box-shadow:0 6px 16px rgba(0,0,0,.08);color:#1f2937}
+.task-count{margin-left:6px;background:#e2e8f0;color:#475569;border-radius:9999px;padding:0 6px;font-size:.75rem;font-weight:800}
+.tasks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.task-card{position:relative;overflow:hidden}
+.task-card .task-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.task-role-badge{color:#fff;border-radius:9999px;padding:4px 8px;font-weight:800}
+.task-points{font-weight:800;color:#334155}
+.task-content .task-title{font-size:1rem;font-weight:800;color:#1f2937;margin-bottom:4px}
+.task-content .task-description{color:#64748b;margin-bottom:8px}
+.task-meta{display:flex;gap:10px;color:#64748b;font-weight:600}
+.task-requirements h4{font-weight:800;color:#1f2937;margin:6px 0}
+.task-button{border:none;border-radius:8px;padding:10px 12px;font-weight:800}
+.start-button{background:#e2e8f0;color:#1f2937}
+.complete-button{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+.task-completed{display:flex;align-items:center;gap:6px;font-weight:800;color:#10b981}
+.completion-overlay{position:absolute;inset:0;background:rgba(255,255,255,.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;border-radius:12px}
+.completion-effect .completion-text{font-weight:800;color:#1f2937;margin-bottom:6px}
+.completion-progress{height:6px;background:linear-gradient(90deg,#34d399,#10b981);border-radius:9999px}
+
 .task-board-fab:hover {
     box-shadow: 0 12px 32px rgba(59, 130, 246, 0.4);
 }
 
 .card {
-    background-color: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(0, 30, 80, 0.08);
     padding: 24px 32px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 .btn {
@@ -103,7 +153,7 @@ body {
     white-space: nowrap;
 }
 
-.btn-primary {
+.btn-primary { /* keep original gradient */
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     color: white;
     box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25);
@@ -119,7 +169,7 @@ body {
     box-shadow: none;
 }
 
-.btn-secondary {
+.btn-secondary { /* neutral glass */
     background-color: #e2e8f0;
     color: #475569;
 }
@@ -128,7 +178,14 @@ body {
     background-color: #cbd5e1;
 }
 
-.btn-nav {
+.btn-nav { /* nav buttons */
+    position: relative;
+    overflow: hidden;
+}
+.btn, .btn-nav, .task-board-fab { position: relative; }
+.btn.shine-on-hover::after, .btn-nav.shine-on-hover::after { content:""; position:absolute; top:0; left:-120%; width:40%; height:100%; transform:skewX(-20deg); background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.35), rgba(255,255,255,0)); transition:transform .6s; }
+.btn.shine-on-hover:hover::after, .btn-nav.shine-on-hover:hover::after { transform:translateX(300%) skewX(-20deg); }
+.btn-primary { /* keep original gradient */
     background: transparent;
     color: #475569;
     font-weight: 600;
@@ -167,6 +224,27 @@ body {
     font-weight: 700;
     color: #1e40af;
 }
+
+/* Animated Leaderboard */
+.animated-leaderboard-container{display:flex;flex-direction:column;gap:12px}
+.leaderboard-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
+.leaderboard-header .header-title{display:flex;align-items:center;gap:10px;font-weight:800;color:#1f2937}
+.leaderboard-controls .control-button{padding:8px 12px;border-radius:8px;border:1px solid #e5e7eb;background:rgba(255,255,255,.7);font-weight:700;color:#475569}
+.leaderboard-list{display:flex;flex-direction:column;gap:10px}
+.leaderboard-entry{display:grid;grid-template-columns:80px 1fr auto;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;border:1px solid #e5e7eb;position:relative}
+.leaderboard-entry.top-three{box-shadow:0 8px 26px rgba(250,204,21,.12)}
+.rank-display{font-size:1.1rem;font-weight:800}
+.rank-change{display:inline-flex;align-items:center;gap:4px;font-weight:800}
+.entry-user{display:flex;align-items:center;gap:12px}
+.user-info .user-name{font-weight:800;color:#1f2937}
+.user-info .user-role{margin-top:2px}
+.role-badge{padding:4px 8px;border-radius:9999px;color:#fff;font-weight:700}
+.entry-stats{display:flex;align-items:center;gap:16px}
+.stat-item{display:flex;align-items:center;gap:6px}
+.you-badge{margin-left:6px;background:#10b981;color:#fff;border-radius:9999px;padding:2px 6px;font-size:.7rem;font-weight:800}
+.new-entry-glow{position:absolute;inset:-2px;border-radius:14px;background:radial-gradient(400px 40px at 10% -10%, rgba(139,92,246,.18), transparent 50%),radial-gradient(400px 40px at 90% 110%, rgba(59,130,246,.18), transparent 50%)}
+.celebration-particles{position:absolute;right:14px;top:6px;display:flex;gap:4px}
+.particle{filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
 
 /* Streak Counter */
 .streak-counter {
@@ -247,6 +325,8 @@ body {
 
 
 /* --- PROFILE PAGE STYLES --- */
+.progress-card{background:rgba(255,255,255,.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.65);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08);padding:16px}
+.badges-section{background:rgba(255,255,255,.5);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.6);border-radius:16px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.06)}
 
 /* Customization Card */
 .profile-customization-card {

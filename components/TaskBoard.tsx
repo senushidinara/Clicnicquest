@@ -80,7 +80,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
   return (
     <div className="task-board-container">
       <motion.div
-        className="task-board-header"
+        className="task-board-header glass-panel"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -117,7 +117,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
             return (
               <motion.div
                 key={task.id}
-                className={`task-card ${task.status} ${isExpired ? 'expired' : ''}`}
+                className={`task-card glass-card ${task.status} ${isExpired ? 'expired' : ''}`}
                 layout
                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -161,7 +161,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
                 <div className="task-progress">
                   {task.status === 'pending' && (
                     <motion.button
-                      className="task-button start-button"
+                      className="task-button start-button shine-on-hover"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => onTaskStart(task.id)}
@@ -172,7 +172,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
 
                   {task.status === 'active' && canComplete && (
                     <motion.button
-                      className="task-button complete-button"
+                      className="task-button complete-button shine-on-hover"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleTaskComplete(task.id)}

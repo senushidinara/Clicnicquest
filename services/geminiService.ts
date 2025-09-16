@@ -1,9 +1,3 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
-*/
-import { GoogleGenAI, Type } from "@google/genai";
-
 export interface QuizQuestion {
     question: string;
     options: string[];
@@ -20,209 +14,268 @@ export interface Mission {
     questions: QuizQuestion[];
 }
 
+// Attempt to dynamically load the Google GenAI client. This will fail in browser environments
+// or when the package cannot be used at runtime; callers handle a null result and fall back.
+async function loadGenAI() {
+    try {
+        // Dynamic import so bundlers don't try to include this at build-time for the browser.
+        const mod = await import('@google/genai');
+        const { GoogleGenAI, Type } = mod as any;
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+        // Prefer environment variable; if running in a browser, allow an injected window value.
+        const apiKey = (typeof process !== 'undefined' && (process.env as any).API_KEY) || (typeof window !== 'undefined' && (window as any).__API_KEY__);
 
-const quizSchema = {
-    type: Type.ARRAY,
-    items: {
-        type: Type.OBJECT,
-        properties: {
-            question: {
-                type: Type.STRING,
-                description: "The trivia question, riddle, or case study text.",
-            },
-            options: {
-                type: Type.ARRAY,
-                items: { type: Type.STRING },
-                description: "An array of 4 possible answers.",
-            },
-            answer: {
-                type: Type.STRING,
-                description: "The correct answer, which must be one of the strings from the 'options' array.",
-            },
-            points: {
-                type: Type.INTEGER,
-                description: "The point value based on question difficulty (e.g., 10 for easy, 20 for medium, 30-50 for hard).",
-            }
-        },
-        required: ["question", "options", "answer", "points"],
+        if (!apiKey) {
+            console.warn('Google GenAI API key not found. Falling back to local generator.');
+            return null;
+        }
+
+        const ai = new GoogleGenAI({ apiKey });
+        return { ai, Type } as any;
+    } catch (err) {
+        console.warn('Google GenAI client unavailable in this environment:', err);
+        return null;
     }
-};
+}
+
+function deterministicRandom(seed: number) {
+    // Simple LCG for deterministic pseudo-randomness based on seed
+    let state = seed % 2147483647;
+    if (state <= 0) state += 2147483646;
+    return () => (state = (state * 16807) % 2147483647) / 2147483647;
+}
+
+function sampleQuestion(type: MissionType, rnd: () => number): QuizQuestion {
+    const pick = (arr: string[]) => arr[Math.floor(rnd() * arr.length)];
+
+    switch (type) {
+        case 'RIDDLE':
+            return {
+                question: 'I can be white, red, or spotted, found in labs and clinics; I help reveal the unseen under light — what am I?',
+                options: ['Microscope slide', 'X-ray machine', 'Stethoscope', 'Hemoglobin meter'],
+                answer: 'Microscope slide',
+                points: 40,
+            };
+        case 'DIAGNOSIS_CHALLENGE':
+            return {
+                question: 'A 65-year-old with sudden chest pain and ST-elevations on ECG — what is the most likely diagnosis?',
+                options: ['Pulmonary embolism', 'ST-elevation myocardial infarction', 'Pericarditis', 'Aortic dissection'],
+                answer: 'ST-elevation myocardial infarction',
+                points: 50,
+            };
+        case 'MEDICAL_HISTORY':
+            return {
+                question: 'Who is widely credited with developing modern antiseptic surgery practices in the 19th century?',
+                options: ['Louis Pasteur', 'Joseph Lister', 'Edward Jenner', 'Alexander Fleming'],
+                answer: 'Joseph Lister',
+                points: 30,
+            };
+        case 'LAB_SAFETY_SCENARIO':
+            return {
+                question: 'A small chemical spill occurs in a lab. What is the immediate correct first step?',
+                options: ['Evacuate and notify safety', 'Attempt to clean it immediately', 'Ignore if it seems minor', 'Dilute with water and leave'],
+                answer: 'Evacuate and notify safety',
+                points: 35,
+            };
+        case 'LOGISTICS_PUZZLE':
+            return {
+                question: 'A ward is over capacity and patients wait longer. Which solution best improves throughput?',
+                options: ['Increase admission rate', 'Improve patient discharge planning', 'Close beds', 'Reduce staffing'],
+                answer: 'Improve patient discharge planning',
+                points: 30,
+            };
+        case 'TECH_TROUBLESHOOTING':
+            return {
+                question: 'A clinician cannot connect to the hospital Wi‑Fi on their tablet. First troubleshooting step?',
+                options: ['Reboot tablet and retry', 'Replace tablet immediately', 'Reset entire network', 'Ignore and use personal hotspot'],
+                answer: 'Reboot tablet and retry',
+                points: 25,
+            };
+        case 'FACILITIES_CHALLENGE':
+            return {
+                question: 'There is a power outage in a non-critical area. What is the highest priority action?',
+                options: ['Call maintenance next day', 'Switch affected systems to backup power if available', 'Continue working as normal', 'Evacuate the building'],
+                answer: 'Switch affected systems to backup power if available',
+                points: 30,
+            };
+        case 'TRIVIA':
+        default:
+            const questions = [
+                {
+                    question: 'Which organ produces insulin?',
+                    options: ['Liver', 'Pancreas', 'Kidney', 'Spleen'],
+                    answer: 'Pancreas',
+                    points: 10,
+                },
+                {
+                    question: 'What blood type is known as the universal donor?',
+                    options: ['A', 'B', 'AB', 'O negative'],
+                    answer: 'O negative',
+                    points: 10,
+                },
+                {
+                    question: 'Which vitamin is essential for blood clotting?',
+                    options: ['Vitamin A', 'Vitamin C', 'Vitamin K', 'Vitamin D'],
+                    answer: 'Vitamin K',
+                    points: 20,
+                },
+            ];
+            return questions[Math.floor(rnd() * questions.length)];
+    }
+}
+
+function buildSampleMission(missionType: MissionType, dateSeed: number): Mission {
+    const rnd = deterministicRandom(dateSeed);
+
+    if (missionType === 'TRIVIA') {
+        const q1 = sampleQuestion('TRIVIA', rnd);
+        const q2 = sampleQuestion('TRIVIA', rnd);
+        const q3 = sampleQuestion('TRIVIA', rnd);
+        return {
+            type: 'TRIVIA',
+            title: 'Medical Trivia',
+            description: 'Test your knowledge with quick medical questions.',
+            questions: [q1, q2, q3],
+        };
+    }
+
+    const q = sampleQuestion(missionType, rnd);
+    return {
+        type: missionType,
+        title: q.question.length > 40 ? 'Challenge' : 'Quick Question',
+        description: 'A generated mission for practice and learning.',
+        questions: [q],
+    };
+}
 
 export async function generateDailyMission(): Promise<Mission> {
     const missionTypes: MissionType[] = [
-        'TRIVIA', 
-        'RIDDLE', 
-        'DIAGNOSIS_CHALLENGE', 
-        'MEDICAL_HISTORY', 
-        'LAB_SAFETY_SCENARIO', 
-        'LOGISTICS_PUZZLE', 
+        'TRIVIA',
+        'RIDDLE',
+        'DIAGNOSIS_CHALLENGE',
+        'MEDICAL_HISTORY',
+        'LAB_SAFETY_SCENARIO',
+        'LOGISTICS_PUZZLE',
         'TECH_TROUBLESHOOTING',
-        'FACILITIES_CHALLENGE'
+        'FACILITIES_CHALLENGE',
     ];
-    // Use date to get a consistent mission type for the day for all users, making it a communal event.
+
     const today = new Date();
     const missionType = missionTypes[today.getDate() % missionTypes.length];
 
+    // Try to use the real AI client; if unavailable, return a deterministic sample mission.
+    const client = await loadGenAI();
+    if (!client) {
+        return buildSampleMission(missionType, Number(today.toDateString().split(' ')[2] || today.getDate()));
+    }
+
+    const { ai, Type } = client;
+
+    const quizSchema: any = {
+        type: Type.ARRAY,
+        items: {
+            type: Type.OBJECT,
+            properties: {
+                question: { type: Type.STRING },
+                options: { type: Type.ARRAY, items: { type: Type.STRING } },
+                answer: { type: Type.STRING },
+                points: { type: Type.INTEGER },
+            },
+            required: ['question', 'options', 'answer', 'points'],
+        },
+    };
+
     let prompt = '';
-    let title = '';
-    let description = '';
-    let model = "gemini-2.5-flash";
 
     switch (missionType) {
         case 'RIDDLE':
-            title = "Today's Riddle";
-            description = "Solve this tricky medical riddle. Choose the best answer from the options below.";
-            prompt = `
-                Generate a single, unique, and challenging multiple-choice medical riddle.
-                The riddle should be clever and require some lateral thinking or deep medical knowledge.
-                The riddle itself should be the 'question'.
-                Provide exactly 4 plausible but distinct options, with only one being the correct answer.
-                Assign it 40 points for its high difficulty.
-                Ensure the output is a JSON array containing a single question object.
-            `;
+            prompt = `Generate a single unique multiple-choice medical riddle as a JSON array containing one object with fields question, options, answer, points.`;
             break;
-
         case 'DIAGNOSIS_CHALLENGE':
-            title = "Diagnosis Challenge";
-            description = "A patient needs your help. Analyze the case and make the call.";
-            prompt = `
-                Generate a single, unique multiple-choice question simulating a patient diagnosis challenge.
-                Create a short case study (2-3 sentences) with patient symptoms, brief history, and/or initial findings.
-                The question should be "What is the most likely diagnosis?".
-                Provide exactly 4 plausible diagnoses as options, with only one being the most fitting correct answer.
-                Assign it 50 points due to its complexity.
-                Ensure the output is a JSON array containing a single question object.
-            `;
+            prompt = `Generate a single diagnostic multiple-choice question (case study) as a JSON array with one object containing question, options, answer, points.`;
             break;
-        
         case 'MEDICAL_HISTORY':
-            title = "A Trip Through Time";
-            description = "Explore a fascinating case from medical history. What's the story?";
-            prompt = `
-                Generate a single, unique multiple-choice question about a specific, interesting event, discovery, or figure in medical history.
-                The question should be intriguing and educational.
-                Provide exactly 4 plausible options, with only one being the correct answer.
-                Assign it 30 points.
-                Ensure the output is a JSON array containing a single question object.
-            `;
+            prompt = `Generate a single medical history multiple-choice question as a JSON array with one object containing question, options, answer, points.`;
             break;
-
         case 'LAB_SAFETY_SCENARIO':
-            title = "Lab Safety Scenario";
-            description = "An incident has occurred in the research lab! What's the right protocol?";
-            prompt = `
-                Generate a single, unique multiple-choice question based on a common lab safety scenario (e.g., chemical spill, equipment malfunction, contamination).
-                The question should describe the scenario and ask for the correct immediate action.
-                Provide exactly 4 plausible actions as options, but only one should be the correct protocol.
-                Assign it 35 points for its critical nature.
-                Ensure the output is a JSON array containing a single question object.
-            `;
+            prompt = `Generate a single lab safety scenario multiple-choice question as a JSON array with one object containing question, options, answer, points.`;
             break;
-            
         case 'LOGISTICS_PUZZLE':
-            title = "Hospital Logistics Puzzle";
-            description = "Optimize hospital operations in this tricky scenario.";
-            prompt = `
-                Generate a single, unique multiple-choice question presenting a hospital logistics or operational puzzle.
-                Example topics: patient flow management, supply chain issue, or staff scheduling conflict.
-                The question should ask for the most efficient or effective solution.
-                Provide exactly 4 plausible solutions as options.
-                Assign it 30 points.
-                Ensure the output is a JSON array containing a single question object.
-            `;
+            prompt = `Generate a single hospital logistics puzzle multiple-choice question as a JSON array with one object containing question, options, answer, points.`;
             break;
-
         case 'TECH_TROUBLESHOOTING':
-            title = "Tech Troubleshooting";
-            description = "A critical system is down. As an IT specialist, what's your first move?";
-            prompt = `
-                Generate a single, unique multiple-choice question about a common IT problem in a hospital setting.
-                Example topics: EMR (Electronic Medical Record) system is slow, a physician's tablet won't connect to Wi-Fi, a printer in the pharmacy is malfunctioning.
-                The question should ask for the best first step in troubleshooting the issue.
-                Provide exactly 4 plausible troubleshooting steps as options.
-                Assign it 25 points.
-                Ensure the output is a JSON array containing a single question object.
-            `;
+            prompt = `Generate a single tech troubleshooting multiple-choice question as a JSON array with one object containing question, options, answer, points.`;
             break;
-
         case 'FACILITIES_CHALLENGE':
-            title = "Facilities Challenge";
-            description = "An urgent maintenance issue has come up. How do you resolve it?";
-            prompt = `
-                Generate a single, unique multiple-choice question about a hospital facilities or support services challenge.
-                Example topics: power outage, plumbing issue in a critical area, or a security alert.
-                The question should ask for the highest priority action.
-                Provide exactly 4 plausible actions as options.
-                Assign it 30 points.
-                Ensure the output is a JSON array containing a single question object.
-            `;
+            prompt = `Generate a single facilities multiple-choice question as a JSON array with one object containing question, options, answer, points.`;
             break;
-
         case 'TRIVIA':
         default:
-            title = "Medical Trivia";
-            description = "Test your knowledge with these quick-fire questions from across the medical field.";
-            prompt = `
-                Generate 3 unique multiple-choice medical trivia questions with varying difficulty levels.
-                Each question must have exactly 4 options and one single correct answer.
-                Cover a diverse range of medical topics, like anatomy, pharmacology, or medical history.
-                Assign point values based on difficulty: 10 for easy, 20 for medium.
-            `;
+            prompt = `Generate three medical trivia multiple-choice questions as a JSON array. Each object must have question, options (4 items), answer, points.`;
             break;
     }
 
     try {
         const response = await ai.models.generateContent({
-            model,
+            model: 'gemini-2.5-flash',
             contents: prompt,
             config: {
-                responseMimeType: "application/json",
+                responseMimeType: 'application/json',
                 responseSchema: quizSchema,
             },
         });
-        
-        const jsonText = response.text.trim();
-        const questions = JSON.parse(jsonText) as QuizQuestion[];
 
-        if (!Array.isArray(questions) || questions.length === 0) {
-            throw new Error("API returned invalid or empty mission data.");
+        const jsonText = (response && (response as any).text) ? (response as any).text.trim() : '';
+        if (!jsonText) {
+            throw new Error('Empty response from AI model');
         }
-        
+
+        const questions = JSON.parse(jsonText) as QuizQuestion[];
+        if (!Array.isArray(questions) || questions.length === 0) {
+            throw new Error('Parsed response is not a non-empty array');
+        }
+
         return {
             type: missionType,
-            title,
-            description,
+            title: missionType === 'TRIVIA' ? 'Medical Trivia' : 'Daily Mission',
+            description: 'AI generated mission',
             questions,
         };
-
-    } catch (error) {
-        console.error(`Error generating daily mission (type: ${missionType}):`, error);
-        throw new Error("Failed to communicate with the AI model for the daily mission.");
+    } catch (err) {
+        console.error('Error generating mission with AI, falling back to sample:', err);
+        return buildSampleMission(missionType, Number(today.toDateString().split(' ')[2] || today.getDate()));
     }
 }
 
-
 export async function generateAvatarImage(prompt: string): Promise<string> {
+    const client = await loadGenAI();
+    if (!client) {
+        // Return a simple SVG avatar as a data URL so callers can render an image.
+        const svg = `<?xml version='1.0' encoding='UTF-8'?><svg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 24 24'><rect width='100%' height='100%' fill='%23eef2ff'/><circle cx='12' cy='8' r='3.2' fill='%238b5cf6'/><rect x='6' y='14' rx='2' ry='2' width='12' height='6' fill='%231f2937'/></svg>`;
+        return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+    }
+
+    const { ai } = client as any;
+
     try {
         const response = await ai.models.generateImages({
             model: 'imagen-4.0-generate-001',
-            prompt: prompt,
+            prompt,
             config: {
-              numberOfImages: 1,
-              outputMimeType: 'image/png',
-              aspectRatio: '1:1',
+                numberOfImages: 1,
+                outputMimeType: 'image/png',
+                aspectRatio: '1:1',
             },
         });
 
-        if (response.generatedImages && response.generatedImages.length > 0) {
+        if (response && response.generatedImages && response.generatedImages.length > 0) {
             return response.generatedImages[0].image.imageBytes;
-        } else {
-            throw new Error("API did not return any images.");
         }
-    } catch (error) {
-        console.error("Error generating avatar image:", error);
-        throw new Error("Failed to communicate with the image generation model.");
+
+        throw new Error('No images returned from AI');
+    } catch (err) {
+        console.error('Error generating avatar image with AI, returning placeholder:', err);
+        const svg = `<?xml version='1.0' encoding='UTF-8'?><svg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 24 24'><rect width='100%' height='100%' fill='%23eef2ff'/><circle cx='12' cy='8' r='3.2' fill='%238b5cf6'/><rect x='6' y='14' rx='2' ry='2' width='12' height='6' fill='%231f2937'/></svg>`;
+        return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
     }
 }
