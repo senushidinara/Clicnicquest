@@ -31,7 +31,7 @@ const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, score, levelNa
       <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <h1 className="text-2xl font-bold tracking-tight text-gray-800">
-                Clinic<span className="text-blue-500">Quest</span>
+                Clinic<span className="text-blue-500 brand-glow">Quest</span>
             </h1>
           </div>
           <div className="flex items-center gap-4">
