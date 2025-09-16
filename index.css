@@ -6,8 +6,25 @@
 }
 
 .app-bg {
+    position: relative;
     background: linear-gradient(180deg, #f3f5f9 0%, #e8f1f8 100%);
 }
+.app-bg::before,.app-bg::after{
+    content:"";position:absolute;inset:auto;filter:blur(60px);border-radius:50%;z-index:0;opacity:.6;pointer-events:none
+}
+.app-bg::before{width:480px;height:480px;background:radial-gradient(circle at 30% 30%, rgba(59,130,246,.35), transparent 60%);top:-120px;left:-120px}
+.app-bg::after{width:420px;height:420px;background:radial-gradient(circle at 70% 70%, rgba(139,92,246,.28), transparent 60%);bottom:-100px;right:-100px}
+
+/* Glassmorphism utilities */
+.glass-panel{background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.65);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px;box-shadow:0 10px 30px rgba(2,8,23,.08), inset 0 -1px 0 rgba(255,255,255,.3)}
+.glass-card{background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.6);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:16px;box-shadow:0 8px 24px rgba(2,8,23,.08)}
+.glass-row{background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.glass-header{background:rgba(255,255,255,.6) !important;backdrop-filter:blur(14px) !important;-webkit-backdrop-filter:blur(14px) !important;border-bottom:1px solid rgba(148,163,184,.35)}
+
+/* Shimmer on hover */
+.shine-on-hover{position:relative;overflow:hidden}
+.shine-on-hover::after{content:"";position:absolute;inset:auto -100% 0;top:0;width:40%;transform:skewX(-20deg);background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.35), rgba(255,255,255,0));transition:transform .6s}
+.shine-on-hover:hover::after{transform:translateX(300%) skewX(-20deg)}
 
 /* Dashboard Styles */
 .dashboard-container {
