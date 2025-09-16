@@ -157,7 +157,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
       </motion.div>
 
       {/* Tab Navigation */}
-      <div className="profile-tabs" role="tablist" tabIndex={0} onKeyDown={handleTabsKeyDown}>
+      <div className="profile-tabs glass-panel" role="tablist" tabIndex={0} onKeyDown={handleTabsKeyDown}>
         <div className={`tab-indicator ${selectedTab === 'overview' ? 'pos-0' : selectedTab === 'badges' ? 'pos-1' : 'pos-2'}`} />
         {(['overview', 'badges', 'stats'] as const).map((tab) => (
           <button
@@ -190,7 +190,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                   {user.roles.map((role) => (
                     <motion.div
                       key={role.id}
-                      className={`role-card ${user.currentRole.id === role.id ? 'current' : ''}`}
+                      className={`role-card glass-card shine-on-hover ${user.currentRole.id === role.id ? 'current' : ''}`}
                       whileHover={{ scale: 1.05 }}
                       onMouseMove={(e) => {
                         const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
@@ -209,7 +209,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                 </div>
               </div>
 
-              <div className="recent-activity">
+              <div className="recent-activity glass-card">
                 <h3>Recent Activity</h3>
                 <div className="activity-list">
                   <div className="activity-item">
