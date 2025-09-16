@@ -91,7 +91,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   return (
     <div className="profile-page-container">
       <motion.div
-        className="profile-header"
+        className="profile-header glass-panel"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
