@@ -1,4 +1,6 @@
-body {
+@import "styles/profile.css";
+
+* {
     font-family: 'Inter', sans-serif;
     color: #1e293b; /* Darker slate color for better contrast */
 }
