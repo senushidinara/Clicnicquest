@@ -32,7 +32,7 @@
 .role-card::after{content:"";position:absolute;inset:0;background:radial-gradient(600px 80px at var(--mx,50%) -20%, rgba(59,130,246,.15), transparent 60%);opacity:0;transition:opacity .2s}
 .role-card:hover::after{opacity:1}
 .current-badge{position:absolute;top:10px;left:10px;background:#10b981;color:#fff;font-weight:800;font-size:.7rem;border-radius:9999px;padding:2px 8px}
-.recent-activity{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;box-shadow:0 6px 18px rgba(0,0,0,.05)}
+.recent-activity{background:rgba(255,255,255,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.6);border-radius:12px;padding:16px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
 .activity-list{display:flex;flex-direction:column;gap:10px}
 .activity-item{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:10px;background:#f8fafc;border-radius:10px;padding:10px;border:1px solid #eef2f7;transition:transform .15s, box-shadow .15s}
 .activity-item:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.06)}
