@@ -24,6 +24,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   const [tempUsername, setTempUsername] = useState(user.username);
   const [tempAvatarConfig, setTempAvatarConfig] = useState<AvatarConfig>(user.avatarConfig);
   const [selectedTab, setSelectedTab] = useState<'overview' | 'badges' | 'stats'>('overview');
+  const handleTabsKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const order: Array<'overview' | 'badges' | 'stats'> = ['overview', 'badges', 'stats'];
+    const idx = order.indexOf(selectedTab);
+    if (e.key === 'ArrowRight') {
+      setSelectedTab(order[(idx + 1) % order.length]);
+    } else if (e.key === 'ArrowLeft') {
+      setSelectedTab(order[(idx - 1 + order.length) % order.length]);
+    }
+  };
 
   const skinTones = ['👤', '👨🏻', '👨🏼', '👨🏽', '👨🏾', '👨🏿', '👩🏻', '👩🏼', '👩🏽', '👩🏾', '👩🏿'];
   const hairStyles = ['🦲', '👨‍🦲', '👨‍🦱', '👨‍🦳', '👨‍🦰', '👩‍🦲', '👩‍🦱', '👩‍🦳', '👩‍🦰'];
@@ -148,11 +157,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
       </motion.div>
 
       {/* Tab Navigation */}
-      <div className="profile-tabs">
+      <div className="profile-tabs" role="tablist" tabIndex={0} onKeyDown={handleTabsKeyDown}>
+        <div className={`tab-indicator ${selectedTab === 'overview' ? 'pos-0' : selectedTab === 'badges' ? 'pos-1' : 'pos-2'}`} />
         {(['overview', 'badges', 'stats'] as const).map((tab) => (
           <button
             key={tab}
             className={`tab-button ${selectedTab === tab ? 'active' : ''}`}
+            role="tab"
+            aria-selected={selectedTab === tab}
             onClick={() => setSelectedTab(tab)}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
