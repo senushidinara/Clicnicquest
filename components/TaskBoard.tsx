@@ -80,7 +80,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
   return (
     <div className="task-board-container">
       <motion.div
-        className="task-board-header"
+        className="task-board-header glass-panel"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -117,7 +117,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
             return (
               <motion.div
                 key={task.id}
-                className={`task-card ${task.status} ${isExpired ? 'expired' : ''}`}
+                className={`task-card glass-card ${task.status} ${isExpired ? 'expired' : ''}`}
                 layout
                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
