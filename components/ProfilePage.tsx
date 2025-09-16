@@ -132,8 +132,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               )}
             </div>
             
-            <div className="current-role">
-              <span className="role-badge" style={{ backgroundColor: user.currentRole.color }}>
+            <div className="current-role" style={{ ['--role-color' as any]: user.currentRole.color }}>
+              <span className="role-badge">
                 {user.currentRole.icon} {user.currentRole.name}
               </span>
             </div>
@@ -219,7 +219,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
             <div className="badges-content">
               {Object.entries(getBadgesByRarity()).map(([rarity, badges]) => (
                 <div key={rarity} className="badge-rarity-section">
-                  <h3 style={{ color: getRarityColor(rarity as Badge['rarity']) }}>
+                  <h3 className={`rarity-title rarity-${rarity}`}>
                     {rarity.charAt(0).toUpperCase() + rarity.slice(1)} Badges ({badges.length})
                   </h3>
                   <div className="badges-grid">
@@ -232,9 +232,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                         transition={{ duration: 0.3, delay: index * 0.05 }}
                         whileHover={{ scale: 1.1, y: -5 }}
                       >
-                        <div 
-                          className="badge-icon"
-                          style={{ color: getRarityColor(badge.rarity) }}
+                        <div
+                          className={`badge-icon rarity-${badge.rarity}`}
                         >
                           {badge.icon}
                         </div>
