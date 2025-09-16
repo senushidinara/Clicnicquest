@@ -26,6 +26,9 @@
 .shine-on-hover::after{content:"";position:absolute;inset:auto -100% 0;top:0;width:40%;transform:skewX(-20deg);background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.35), rgba(255,255,255,0));transition:transform .6s}
 .shine-on-hover:hover::after{transform:translateX(300%) skewX(-20deg)}
 
+/* Brand title glow without changing color */
+.brand-glow{ text-shadow: 0 1px 0 rgba(255,255,255,.6), 0 4px 12px rgba(59,130,246,.25); }
+
 /* Dashboard Styles */
 .dashboard-container {
     width: 100%;
