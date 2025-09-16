@@ -383,7 +383,7 @@ const App: React.FC = () => {
                     
                     <div className="action-buttons">
                         <motion.button
-                            className="btn btn-primary"
+                            className="btn btn-primary shine-on-hover"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setView('hospital-map')}
@@ -392,7 +392,7 @@ const App: React.FC = () => {
                         </motion.button>
                         
                         <motion.button
-                            className="btn btn-secondary"
+                            className="btn btn-secondary shine-on-hover"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setView('role-selector')}

@@ -192,6 +192,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                       key={role.id}
                       className={`role-card ${user.currentRole.id === role.id ? 'current' : ''}`}
                       whileHover={{ scale: 1.05 }}
+                      onMouseMove={(e) => {
+                        const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
+                        const x = ((e.clientX - rect.left) / rect.width) * 100;
+                        (e.currentTarget as HTMLDivElement).style.setProperty('--mx', x + '%');
+                      }}
                     >
                       <div className="role-icon">{role.icon}</div>
                       <div className="role-name">{role.name}</div>

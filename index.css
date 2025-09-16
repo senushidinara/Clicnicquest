@@ -48,11 +48,13 @@
 }
 
 .dashboard-card {
-    background: white;
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-radius: 16px;
     padding: 2rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.65);
 }
 
 .main-card {
@@ -124,12 +126,13 @@
 }
 
 .card {
-    background-color: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(0, 30, 80, 0.08);
     padding: 24px 32px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 .btn {
@@ -146,7 +149,7 @@
     white-space: nowrap;
 }
 
-.btn-primary {
+.btn-primary { /* keep original gradient */
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     color: white;
     box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25);
@@ -162,7 +165,7 @@
     box-shadow: none;
 }
 
-.btn-secondary {
+.btn-secondary { /* neutral glass */
     background-color: #e2e8f0;
     color: #475569;
 }
@@ -171,7 +174,14 @@
     background-color: #cbd5e1;
 }
 
-.btn-nav {
+.btn-nav { /* nav buttons */
+    position: relative;
+    overflow: hidden;
+}
+.btn, .btn-nav, .task-board-fab { position: relative; }
+.btn.shine-on-hover::after, .btn-nav.shine-on-hover::after { content:""; position:absolute; top:0; left:-120%; width:40%; height:100%; transform:skewX(-20deg); background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.35), rgba(255,255,255,0)); transition:transform .6s; }
+.btn.shine-on-hover:hover::after, .btn-nav.shine-on-hover:hover::after { transform:translateX(300%) skewX(-20deg); }
+.btn-primary { /* keep original gradient */
     background: transparent;
     color: #475569;
     font-weight: 600;
@@ -311,6 +321,8 @@
 
 
 /* --- PROFILE PAGE STYLES --- */
+.progress-card{background:rgba(255,255,255,.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.65);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08);padding:16px}
+.badges-section{background:rgba(255,255,255,.5);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.6);border-radius:16px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.06)}
 
 /* Customization Card */
 .profile-customization-card {

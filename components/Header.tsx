@@ -15,10 +15,10 @@ interface HeaderProps {
 
 const renderAvatar = (avatar: string) => {
     if (avatar.startsWith('data:image')) {
-        return <img src={avatar} alt="User Avatar" className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md" />;
+        return <img src={avatar} alt="User Avatar" className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md ring-2 ring-blue-400/40" />;
     }
     return (
-        <span className="w-10 h-10 flex items-center justify-center bg-blue-100 rounded-full text-2xl border-2 border-white shadow-md">
+        <span className="w-10 h-10 flex items-center justify-center bg-blue-100 rounded-full text-2xl border-2 border-white shadow-md ring-2 ring-blue-400/40">
             {avatar}
         </span>
     );

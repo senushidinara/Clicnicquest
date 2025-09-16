@@ -161,7 +161,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
                 <div className="task-progress">
                   {task.status === 'pending' && (
                     <motion.button
-                      className="task-button start-button"
+                      className="task-button start-button shine-on-hover"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => onTaskStart(task.id)}
@@ -172,7 +172,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
 
                   {task.status === 'active' && canComplete && (
                     <motion.button
-                      className="task-button complete-button"
+                      className="task-button complete-button shine-on-hover"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleTaskComplete(task.id)}
